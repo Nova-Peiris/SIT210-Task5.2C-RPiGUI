@@ -1,0 +1,62 @@
+from tkinter import *
+import tkinter.font
+from gpiozero import LED
+import RPi.GPIO as GPIO
+
+#declare pin number standard
+GPIO.setmode(GPIO.BCM)
+
+#LED def
+red = LED(21)
+green = LED(20)
+blue = LED(16)
+
+#GUI def
+win = Tk()
+v = tkinter.IntVar()
+
+win.title("LED Toggle")
+myFont = tkinter.font.Font(family = 'Helvetica', size = 12, weight = "bold")
+
+tkinter.Label(win, text="""Choose buttons to light up LEDs""", justify = tkinter.CENTER, padx = 20).pack()
+
+#Event Func
+def red_led():
+    if green.is_lit:
+        green.off()
+    if blue.is_lit:
+        blue.off()
+    
+    red.on()
+
+def green_led():
+    if red.is_lit:
+        red.off()
+    if blue.is_lit:
+        blue.off()
+    
+    green.on()
+    
+def blue_led():
+    if green.is_lit:
+        green.off()
+    if red.is_lit:
+        red.off()
+    
+    blue.on()
+    
+def close():
+    GPIO.cleanup()
+    win.destroy()
+
+#Widgets
+tkinter.Radiobutton(win, text = "Red", padx = 20, variable = v, command = red_led, value = 1).pack(anchor = tkinter.W)
+tkinter.Radiobutton(win, text = "Green", padx = 20, variable = v, command = green_led, value = 2).pack(anchor = tkinter.W)
+tkinter.Radiobutton(win, text = "Blue", padx = 20, variable = v, command = blue_led, value = 3).pack(anchor = tkinter.W)
+
+exitbutton = Button(win, text = 'Exit', font = myFont, command = close, bg = 'red', height = 1, width = 25         ).pack(anchor = tkinter.W)
+
+
+win.protocol("WM_DELETE_WINDOW", close)
+
+win.mainloop()
